@@ -1,12 +1,12 @@
 
 
-       // Main Commands 
+// **Main Commands** 
 flutter clean
 Flutter pub get
 Flutter –version
 Flutter doctor
 
-// Shortcuts
+// **Shortcuts**
 Alt + Enter - Import and suggestion
 Ctrl + Space = suggestion keys
 Ctrl+ Alt + L = Format
@@ -15,7 +15,7 @@ Ctrl+ Alt + L = Format
 MediaQuery.of(context).size.width,
 
 
-// Widgets
+// **Widgets**
 1. MaterialApp - routes, themes, home
 2. Scaffold = appbar, body , backgroundColor, floatingActionButton, drawer
 3. Appbar - title, leading , actions, centerTitle,
@@ -61,6 +61,9 @@ TextEditing Contollers
 // DropdownButton - items, value, onChanged, hint, icon, underline, isExpanded
 // Selection - 
 
+// Github 
+**Local Database**
+ - SharedPreferences, Hive, Sqflite, Moor, Drift, 
  
 
 
