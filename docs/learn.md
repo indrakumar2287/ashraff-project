@@ -64,6 +64,12 @@ TextEditing Contollers
 // Github 
 **Local Database**
  - SharedPreferences, Hive, Sqflite, Moor, Drift, 
+
+**State Management** 
+- GetX, Provider, Bloc, Riverpod, Mobx, Redux, 
+- GetX - Controller, Obx, Get.put(), Get.find(), Get.snackbar(), Get.defaultDialog(), Get.bottomSheet(), Get.to(), Get.off(), Get.offAll()
+- FormKey 
+- Validators 
  
 
 

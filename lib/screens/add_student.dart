@@ -21,7 +21,7 @@ class _AddStudentScreenState extends State<AddStudentScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(addedStudents?.lastOrNull?['name']),
+            Text(addedStudents?.lastOrNull?['name'] ?? 'No Name'),
             SizedBox(height: 100),
 
             Center(
