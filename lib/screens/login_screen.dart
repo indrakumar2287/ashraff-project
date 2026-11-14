@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shopping_app/screens/home_screen.dart';
+import 'package:shopping_app/services/firebase_service.dart';
 import 'package:shopping_app/utils/custom_toast.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -26,7 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.deepPurple.withAlpha(50),
+      // backgroundColor: Colors.white.withAlpha(50),
       appBar: AppBar(
         title: Text("Login Screen"),
         elevation: 10,
@@ -73,9 +74,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   controller: emailController,
                   // Keyboard
                   keyboardType: TextInputType.emailAddress,
+
                   // Full Filter - Restriction
                   // inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
                     // label: Text("Email"),
@@ -124,23 +125,7 @@ class _LoginScreenState extends State<LoginScreen> {
             Center(
               child: ElevatedButton(
                 onPressed: () {
-
-
-                  if(emailController.text.isEmpty || passwordController.text.isEmpty){
-                    print("Please enter details");
-                    showToast("Please enter details");
-                    return ;
-                  }
-
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => HomeScreen(
-                        email: emailController.text,
-                        password: passwordController.text,
-                      ),
-                    ),
-                  );
+                  login();
                 },
                 onLongPress: () {
                   print("Long Press");
@@ -166,5 +151,31 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Icon(Icons.refresh),
       ),
     );
+  }
+
+  Future<void> login() async {
+    if (emailController.text.isEmpty || passwordController.text.isEmpty) {
+      print("Please enter details");
+      showToast("Please enter details");
+      return;
+    }
+    bool isSuccess = await FirebaseService().loginUser(
+      email: emailController.text,
+      password: passwordController.text,
+    );
+    if(isSuccess){
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomeScreen(
+            email: emailController.text,
+            password: passwordController.text,
+          ),
+        ),
+      );
+
+      showSnackBar(text: "Logged in successfully", isSuccess: true);
+    }
+
   }
 }

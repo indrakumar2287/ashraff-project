@@ -70,6 +70,20 @@ TextEditing Contollers
 - GetX - Controller, Obx, Get.put(), Get.find(), Get.snackbar(), Get.defaultDialog(), Get.bottomSheet(), Get.to(), Get.off(), Get.offAll()
 - FormKey 
 - Validators 
+
+GetX Utilities 
+GetX Routing - Get.to(), Get.off(), Get.offAll(), Get.back()
+Responsive ui 
+Assets and images 
+
+
+Firebase Setup 
+Firebase Auth - email/password
+
+
+
+
+
  
 
 
