@@ -4,6 +4,8 @@ class RouteNames {
   static String booksScreen = '/books';
   static String booksDetailsScreen = '/book-details';
   static String loginScreen = '/login';
+  static String signup = '/signup';
+  static String builders = '/builders';
 
   static String getxWidgets = '/gets-widgets';
 }
