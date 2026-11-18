@@ -6,6 +6,7 @@ class RouteNames {
   static String loginScreen = '/login';
   static String signup = '/signup';
   static String builders = '/builders';
+  static String imageWidgets = '/image-widget';
 
   static String getxWidgets = '/gets-widgets';
 }

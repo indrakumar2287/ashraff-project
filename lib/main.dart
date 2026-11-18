@@ -11,6 +11,7 @@ import 'package:shopping_app/screens/builders_widget.dart';
 import 'package:shopping_app/screens/getx_widgets.dart';
 import 'package:shopping_app/screens/home_screen.dart';
 import 'package:shopping_app/screens/auth/view/login_screen.dart';
+import 'package:shopping_app/screens/images/view/image_widgets.dart';
 import 'package:shopping_app/screens/student/view/employee_list_screen.dart';
 import 'package:shopping_app/screens/user_data_screen.dart';
 import 'package:shopping_app/screens/user_list_screen.dart';
@@ -41,7 +42,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: 'Flutter Demo',
-      initialRoute: RouteNames.builders,
+      initialRoute: RouteNames.imageWidgets,
       getPages: [
         GetPage(
           name: RouteNames.employeeScreen,
@@ -54,6 +55,7 @@ class MyApp extends StatelessWidget {
         GetPage(name: RouteNames.loginScreen, page: () => LoginScreen()),
         GetPage(name: RouteNames.signup, page: () => SignupScreen()),
         GetPage(name: RouteNames.builders, page: () => BuildersWidget()),
+        GetPage(name: RouteNames.imageWidgets, page: () => ImageWidgets()),
       ],
       theme: ThemeData(
         // colorScheme: .fromSeed(seedColor: Colors.deepPurple),
