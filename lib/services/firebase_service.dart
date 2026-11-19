@@ -15,10 +15,12 @@ class FirebaseService {
       // UserMetadata? metaData = user.user?.metadata ;
       // print("Name >> ${metaData}") ;
 
-      final user2 = FirebaseAuth.instance.currentUser ;
+      final user2 = FirebaseAuth.instance.currentUser;
 
-
-      final data  = await FirebaseFirestore.instance.collection("Users").doc(user2?.uid).get() ;
+      final data = await FirebaseFirestore.instance
+          .collection("Users")
+          .doc(user2?.uid)
+          .get();
 
       print("UserData >> ${data.data()}");
 
@@ -40,20 +42,23 @@ class FirebaseService {
       UserCredential user = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
 
-      FirebaseFirestore.instance.collection("Users").doc(user.user?.uid).set({
-        "name": name,
-        "email": email,
-        "uid": user?.user?.uid,
-        "createdAt": FieldValue.serverTimestamp(),
-      });
+      await FirebaseFirestore.instance
+          .collection("Users")
+          .doc(user.user?.uid)
+          .set({
+            "name": name,
+            "email": email,
+            "uid": user?.user?.uid,
+            "createdAt": FieldValue.serverTimestamp(),
+          });
 
-      print(" Name >> ${user.user?.displayName}") ;
+      print(" Name >> ${user.user?.displayName}");
 
       return true;
     } on FirebaseException catch (e) {
       print("Firebase error >> $e");
 
-      showSnackBar(text:e.toString(), isSuccess: false) ;
+      showSnackBar(text: e.toString(), isSuccess: false);
 
       return false;
     }

@@ -10,12 +10,12 @@ class AuthController extends GetxController {
   final emailController = TextEditingController();
   final passowrdController = TextEditingController();
 
-  RxBool isLoadingLogin = false.obs ;
-  RxBool isLoadingSignUp = false.obs ;
+  RxBool isLoadingLogin = false.obs;
+  RxBool isLoadingSignUp = false.obs;
 
   void signUpUser() async {
     try {
-      isLoadingSignUp.value = true ;
+      isLoadingSignUp.value = true;
       bool isSuccess = await FirebaseService().signUpUser(
         email: emailController.text,
         password: passowrdController.text,
@@ -23,7 +23,7 @@ class AuthController extends GetxController {
       );
 
       if (isSuccess) {
-        Get.toNamed(RouteNames.booksScreen);
+        Get.offAllNamed(RouteNames.home);
 
         showSnackBar(text: "Sign up successfully", isSuccess: true);
       } else {
@@ -32,18 +32,13 @@ class AuthController extends GetxController {
     } on Exception catch (e) {
       // TODO
     } finally {
-      isLoadingSignUp.value = false ;
-
+      isLoadingSignUp.value = false;
     }
   }
 
-
-
-
-
   Future<void> login() async {
     try {
-      isLoadingLogin.value = true ;
+      isLoadingLogin.value = true;
       if (emailController.text.isEmpty || passowrdController.text.isEmpty) {
         print("Please enter details");
         showToast("Please enter details");
@@ -53,15 +48,14 @@ class AuthController extends GetxController {
         email: emailController.text,
         password: passowrdController.text,
       );
-      if(isSuccess){
-        Get.toNamed(RouteNames.booksScreen);
+      if (isSuccess) {
+        Get.offAllNamed(RouteNames.home);
         showSnackBar(text: "Logged in successfully", isSuccess: true);
       }
     } on Exception catch (e) {
       // TODO
-    }finally{
-      isLoadingLogin.value = false ;
+    } finally {
+      isLoadingLogin.value = false;
     }
-
   }
 }

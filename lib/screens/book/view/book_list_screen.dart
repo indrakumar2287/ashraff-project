@@ -16,6 +16,11 @@ class BookListScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text("Books"),
         actions: [
+          IconButton(
+            onPressed: () => Get.toNamed(RouteNames.chatList),
+            icon: Icon(Icons.chat),
+            tooltip: 'Chats',
+          ),
           GestureDetector(
             onTap: () {
               Get.back();

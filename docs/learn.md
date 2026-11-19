@@ -81,6 +81,35 @@ Firebase Setup
 Firebase Auth - email/password
 
 
+## Simple Firebase Chat
+
+The chat example is in `lib/screens/chat/`. It uses the Firebase users already
+created by signup in the `Users` collection.
+
+1. Sign in with Firebase Authentication.
+2. Open **Chats**, then tap **+** to choose another registered user.
+3. The app creates or reuses a document in `chats`. Each document stores
+   `members`, `memberNames`, `lastMessage`, `createdAt`, and `updatedAt`.
+4. Messages are stored in that chat's `messages` subcollection with
+   `senderId`, `senderName`, `text`, and `createdAt`.
+5. Firestore snapshots update the chat list and message screen in real time.
+
+`ChatController` contains the Firebase calls. The screens display its streams,
+load users, and send messages. This keeps the example to one controller and
+three screens.
+
+Before running it, enable Cloud Firestore and Email/Password sign-in in the
+Firebase project. Configure Firestore security rules to require authentication
+and restrict chat reads and writes to members of that chat. Do not use open
+rules in a deployed app.
+
+## Module Home
+
+The app opens on `HomeScreen`, which uses `GridView.builder` to navigate to the
+learning modules. Sign-in and sign-up return to this screen. The logout button
+asks for confirmation before signing out with Firebase Authentication.
+
+
 
 
 
