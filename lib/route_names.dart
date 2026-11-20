@@ -19,6 +19,7 @@ class RouteNames {
   static String newChat = '/new-chat';
   static String chatRoom = '/chat-room';
   static String firebaseLesson = '/firebase-lesson';
+  static String realtimeDb = '/realtime-db';
 }
 
 class AppStrings {

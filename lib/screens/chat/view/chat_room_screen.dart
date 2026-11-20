@@ -147,17 +147,17 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   }
 
   Future<void> _sendMessage(ChatController controller) async {
-    final text = _messageController.text.trim();
-    if (text.isEmpty || _isSending) return;
-
-    setState(() => _isSending = true);
-    try {
-      await controller.sendMessage(chatId: widget.arguments.chatId, text: text);
-      _messageController.clear();
-    } on FirebaseException catch (error) {
-      Get.snackbar('Message error', error.message ?? error.code);
-    } finally {
-      if (mounted) setState(() => _isSending = false);
-    }
+    // final text = _messageController.text.trim();
+    // if (text.isEmpty || _isSending) return;
+    //
+    // setState(() => _isSending = true);
+    // try {
+    //   await controller.sendMessage(chatId: widget.arguments.chatId, text: text);
+    //   _messageController.clear();
+    // } on FirebaseException catch (error) {
+    //   Get.snackbar('Message error', error.message ?? error.code);
+    // } finally {
+    //   if (mounted) setState(() => _isSending = false);
+    // }
   }
 }

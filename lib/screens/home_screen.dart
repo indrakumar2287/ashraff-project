@@ -8,6 +8,13 @@ class HomeScreen extends StatelessWidget {
 
   static final List<_HomeModule> _modules = [
     _HomeModule(
+      title: 'RealTime DB',
+      description: 'RealTime DB ',
+      icon: Icons.chat_bubble_outline,
+      color: Colors.indigo,
+      route: RouteNames.realtimeDb,
+    ),
+    _HomeModule(
       title: 'Chats',
       description: 'Firebase messaging',
       icon: Icons.chat_bubble_outline,

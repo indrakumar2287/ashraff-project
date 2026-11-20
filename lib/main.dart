@@ -16,6 +16,7 @@ import 'package:shopping_app/screens/getx_widgets.dart';
 import 'package:shopping_app/screens/home_screen.dart';
 import 'package:shopping_app/screens/auth/view/login_screen.dart';
 import 'package:shopping_app/screens/images/view/image_widgets.dart';
+import 'package:shopping_app/screens/realtime_db/view/RealTimeDb.dart';
 import 'package:shopping_app/screens/student/view/employee_list_screen.dart';
 import 'package:shopping_app/screens/student/view/firebase_realtime_lesson_screen.dart';
 import 'package:shopping_app/screens/user_data_screen.dart';
@@ -82,6 +83,11 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: RouteNames.firebaseLesson,
           page: () => const FirebaseRealtimeLessonScreen(),
+        ),
+
+        GetPage(
+          name: RouteNames.realtimeDb,
+          page: () => const RealtimeDb(),
         ),
       ],
       theme: ThemeData(
