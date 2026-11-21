@@ -12,6 +12,9 @@ import 'package:shopping_app/screens/chat/view/chat_list_screen.dart';
 import 'package:shopping_app/screens/chat/view/chat_room_screen.dart';
 import 'package:shopping_app/screens/chat/view/new_chat_screen.dart';
 import 'package:shopping_app/screens/builders_widget.dart';
+import 'package:shopping_app/screens/chat_module/view/chat_module_screen.dart';
+import 'package:shopping_app/screens/chat_module/view/chat_user_list_screen.dart';
+import 'package:shopping_app/screens/chat_module/view/new_chat_module_screen.dart';
 import 'package:shopping_app/screens/getx_widgets.dart';
 import 'package:shopping_app/screens/home_screen.dart';
 import 'package:shopping_app/screens/auth/view/login_screen.dart';
@@ -33,6 +36,9 @@ Future<void> main() async {
   // await DatabaseHelper().getDataBase() ;
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+
+  
 
   runApp(const MyApp());
 }
@@ -85,9 +91,19 @@ class MyApp extends StatelessWidget {
           page: () => const FirebaseRealtimeLessonScreen(),
         ),
 
+        GetPage(name: RouteNames.realtimeDb, page: () => const RealtimeDb()),
+        // New Chat Module
         GetPage(
-          name: RouteNames.realtimeDb,
-          page: () => const RealtimeDb(),
+          name: RouteNames.newChatModule,
+          page: () => const NewChatModuleScreen(),
+        ),
+        GetPage(
+          name: RouteNames.userListChat,
+          page: () => const ChatUsersListScreenState(),
+        ),
+        GetPage(
+          name: RouteNames.chatModuleScreen,
+          page: () => const ChatModuleScreen(),
         ),
       ],
       theme: ThemeData(

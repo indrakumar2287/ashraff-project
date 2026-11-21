@@ -2,11 +2,21 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shopping_app/route_names.dart';
+import 'package:shopping_app/screens/auth/controller/auth_controller.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   static final List<_HomeModule> _modules = [
+    _HomeModule(
+      title: 'Chat 2',
+      description: 'Chat 2 ',
+      icon: Icons.chat_rounded,
+      color: Colors.yellow,
+      route: RouteNames.userListChat,
+    ),
+
+
     _HomeModule(
       title: 'RealTime DB',
       description: 'RealTime DB ',
@@ -100,6 +110,22 @@ class HomeScreen extends StatelessWidget {
     ),
   ];
 
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    getuserNamefromLocal();
+  }
+
+  Future<void> getuserNamefromLocal() async {
+    userName = await getUserName();
+    setState(() {});
+  }
+
   Future<void> _confirmLogout(BuildContext context) async {
     final shouldLogout = await showDialog<bool>(
       context: context,
@@ -139,6 +165,9 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Learning Hub'),
         actions: [
+
+          Text(userName), 
+
           if (user == null)
             IconButton(
               onPressed: () => Get.toNamed(RouteNames.loginScreen),
@@ -203,7 +232,7 @@ class HomeScreen extends StatelessWidget {
                   final columns = constraints.maxWidth >= 700 ? 3 : 2;
                   return GridView.builder(
                     padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
-                    itemCount: _modules.length,
+                    itemCount: HomeScreen._modules.length,
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: columns,
                       crossAxisSpacing: 14,
@@ -211,7 +240,7 @@ class HomeScreen extends StatelessWidget {
                       childAspectRatio: 0.95,
                     ),
                     itemBuilder: (context, index) {
-                      final module = _modules[index];
+                      final module = HomeScreen._modules[index];
                       return _ModuleCard(
                         module: module,
                         onTap: () => Get.toNamed(module.route),

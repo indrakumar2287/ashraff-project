@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:shopping_app/utils/custom_toast.dart';
 
 class FirebaseService {
+
+  
   Future<bool> loginUser({
     required String email,
     required String password,
@@ -31,6 +33,18 @@ class FirebaseService {
 
       return false;
     }
+  }
+
+  Future<Map<String, dynamic>?> getCurrentUserDetails() async {
+    final user = FirebaseAuth.instance.currentUser;
+
+    final data = await FirebaseFirestore.instance
+        .collection("Users")
+        .doc(user?.uid)
+        .get();
+
+    print("UserData >> ${data.data()}");
+    return data.data();
   }
 
   Future<bool> signUpUser({
