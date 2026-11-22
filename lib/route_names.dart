@@ -1,4 +1,5 @@
 class RouteNames {
+  static String splash = '/';
   static String home = '/home';
   static String employeeScreen = '/emp';
   static String addStudent = '/add-student';

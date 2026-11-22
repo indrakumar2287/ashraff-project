@@ -114,6 +114,21 @@ asks for confirmation before signing out with Firebase Authentication.
 
 
  
+// APk Command 
+flutter build apk --release 
+flutter build appbundle --release 
+=
+flutter pub get 
+flutter clean 
+==
+fcm token
+fzI_BLJeSkmV0zLyKBXZi4:APA91bHgneFKxvtSD7E02Pk_0BWVHryVWiBjo8mOuUktqCSsUv4sI33qup6aGLKA_YPNJf6be3-Zama6YclrTvpcSlq8D8Pf08QRocMmZPGtNPMH735TQmk
 
 
-
+https://console.firebase.google.com/
+=
+// Frr APk 
+https://www.diawi.com/. 
+https://www.installonair.com/
+flutter_projects/ashraff-project/build/app/outputs/flutter-apk/
+==

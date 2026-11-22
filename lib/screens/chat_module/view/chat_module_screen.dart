@@ -40,7 +40,6 @@ class _ChatModuleScreenState extends State<ChatModuleScreen> {
                               final msg = messages[index].data();
                               print("Msg >> ${msg['message']}");
                               return ListTile(
-                                    
                                     tileColor: Colors.grey.withAlpha(100),
                                     title: Text(
                                       msg['message'].toString() ?? '',

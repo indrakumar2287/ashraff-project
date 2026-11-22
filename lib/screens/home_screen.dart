@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shopping_app/route_names.dart';
 import 'package:shopping_app/screens/auth/controller/auth_controller.dart';
+import 'package:shopping_app/services/local_db_sf.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -12,7 +13,7 @@ class HomeScreen extends StatefulWidget {
       title: 'Chat 2',
       description: 'Chat 2 ',
       icon: Icons.chat_rounded,
-      color: Colors.yellow,
+      color: Colors.green,
       route: RouteNames.userListChat,
     ),
 
@@ -152,6 +153,7 @@ class _HomeScreenState extends State<HomeScreen> {
     try {
       await FirebaseAuth.instance.signOut();
       Get.offAllNamed(RouteNames.loginScreen);
+      LocalDb.setBool(LocalDbStrings.ISLOGIN, false);
     } on FirebaseAuthException catch (error) {
       Get.snackbar('Logout failed', error.message ?? error.code);
     }
@@ -208,7 +210,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Text(
                       user == null
                           ? 'Welcome!'
-                          : 'Welcome, ${user.email?.split('@').first ?? 'User'}!',
+                          : 'Welcome, $userName!',
                       style: Theme.of(context).textTheme.headlineSmall
                           ?.copyWith(
                             color: Colors.white,

@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shopping_app/firebase_options.dart';
 import 'package:shopping_app/route_names.dart';
 import 'package:shopping_app/screens/add_student.dart';
@@ -20,15 +21,21 @@ import 'package:shopping_app/screens/home_screen.dart';
 import 'package:shopping_app/screens/auth/view/login_screen.dart';
 import 'package:shopping_app/screens/images/view/image_widgets.dart';
 import 'package:shopping_app/screens/realtime_db/view/RealTimeDb.dart';
+import 'package:shopping_app/screens/splash_screen.dart';
 import 'package:shopping_app/screens/student/view/employee_list_screen.dart';
 import 'package:shopping_app/screens/student/view/firebase_realtime_lesson_screen.dart';
 import 'package:shopping_app/screens/user_data_screen.dart';
 import 'package:shopping_app/screens/user_list_screen.dart';
+import 'package:shopping_app/services/local_db_sf.dart';
+import 'package:shopping_app/services/notification_service.dart';
 import 'package:shopping_app/utils/local_db.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'screens/multi_selection_screen.dart';
 import 'screens/search_screen.dart';
+
+
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,9 +43,10 @@ Future<void> main() async {
   // await DatabaseHelper().getDataBase() ;
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  prefs = await SharedPreferences.getInstance(); 
 
 
-  
+  await NotificationService.init(); 
 
   runApp(const MyApp());
 }
@@ -51,8 +59,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: 'Flutter Demo',
-      initialRoute: RouteNames.home,
+      initialRoute: RouteNames.splash,
       getPages: [
+        GetPage(name: RouteNames.splash, page: () => const SplashScreen()),
         GetPage(name: RouteNames.home, page: () => const HomeScreen()),
         GetPage(
           name: RouteNames.employeeScreen,

@@ -5,9 +5,10 @@ import 'package:get/state_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shopping_app/route_names.dart';
 import 'package:shopping_app/services/firebase_service.dart';
+import 'package:shopping_app/services/local_db_sf.dart';
     
 import 'package:shopping_app/utils/custom_toast.dart';
-import 'package:shopping_app/utils/local_db_strings.dart';
+import 'package:shopping_app/services/local_db_strings.dart';
 
 class AuthController extends GetxController {
   final nameController = TextEditingController();
@@ -31,6 +32,7 @@ class AuthController extends GetxController {
         Get.offAllNamed(RouteNames.home);
 
         showSnackBar(text: "Sign up successfully", isSuccess: true);
+        LocalDb.setBool(LocalDbStrings.ISLOGIN, true);
         await setUserNameInLocalDB(nameController.text); 
       } else {
         // showSnackBar(text: "Firebase Error", isSuccess: false);
@@ -58,6 +60,9 @@ class AuthController extends GetxController {
         Get.offAllNamed(RouteNames.home);
         showSnackBar(text: "Logged in successfully", isSuccess: true);
 
+
+        LocalDb.setBool(LocalDbStrings.ISLOGIN, true);
+
         final userData = await FirebaseService().getCurrentUserDetails();
         print("userData >> ${userData}");
         await setUserNameInLocalDB(userData?['name'].toString() ?? '');   
@@ -70,14 +75,15 @@ class AuthController extends GetxController {
   }
 }
 
+
 Future<void> setUserNameInLocalDB(String userName) async {
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-  prefs.setString(LocalDbStrings.USERNAME, userName);
+  LocalDb.setValue(LocalDbStrings.USERNAME, userName);
 }
 
 Future<String> getUserName() async {
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
-  return prefs.getString(LocalDbStrings.USERNAME) ?? '';
+  return await LocalDb.getValue(LocalDbStrings.USERNAME) ?? '';
 }
+
+
 
 String userName = '';
