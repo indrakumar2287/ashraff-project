@@ -51,6 +51,7 @@ class FirebaseService {
     required String email,
     required String password,
     required String name,
+    required String token,
   }) async {
     try {
       UserCredential user = await FirebaseAuth.instance
@@ -63,6 +64,7 @@ class FirebaseService {
             "name": name,
             "email": email,
             "uid": user?.user?.uid,
+            "fcmToken": token,
             "createdAt": FieldValue.serverTimestamp(),
           });
 

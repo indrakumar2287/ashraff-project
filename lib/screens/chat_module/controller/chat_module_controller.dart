@@ -65,11 +65,20 @@ class ChatModuleController extends GetxController {
     return list.firstOrNull;
   }
 
+  Future<String> getOtherUserId(List userIds) async {
+    final myId = FirebaseAuth.instance.currentUser?.uid ?? '';
+    List list = userIds.where((item) => item != myId).toList();
+
+    return list.firstOrNull;
+  }
+
+
   Stream<QuerySnapshot<Map<String, dynamic>>> getChat(String docId) {
     return FirebaseFirestore.instance
         .collection("User Chats")
         .doc(docId)
         .collection("Messages")
+        .orderBy('createdAt', descending: false)
         .snapshots();
 
     // print("Data>> ${data.docs?.firstOrNull?.metadata}") ;
@@ -85,17 +94,42 @@ class ChatModuleController extends GetxController {
       return;
     }
     try {
-      final currentUser = await FirebaseAuth.instance.currentUser;
+      final currentUser = FirebaseAuth.instance.currentUser;
       await FirebaseFirestore.instance.collection("User Chats").doc(selectedChatId.value).collection("Messages").add({
         'createdAt': FieldValue.serverTimestamp(),
         'updateddAt': FieldValue.serverTimestamp(),
         "senderId": currentUser?.uid,
         "senderName": userName,
         "message" : msgController.text.toString() , 
-        "attachments" : ''
+            "attachments": '',
+            "type": "text",
+          });
+
+      msgController.clear();
+    } on Exception catch (e) {
+      print("Error >> $e");
+    }
+  }
+
+  void sendMediaMsg(String type, String media) async {
+    print("Send media");
+    try {
+      final currentUser = FirebaseAuth.instance.currentUser;
+      await FirebaseFirestore.instance
+          .collection("User Chats")
+          .doc(selectedChatId.value)
+          .collection("Messages")
+          .add({
+            'createdAt': FieldValue.serverTimestamp(),
+            'updateddAt': FieldValue.serverTimestamp(),
+            "senderId": currentUser?.uid,
+            "senderName": userName,
+            "attachments": '',
+            "image": media,
+            "type": "image"
       });
 
-      msgController.clear() ; 
+   
 
       
     } on Exception catch (e) {

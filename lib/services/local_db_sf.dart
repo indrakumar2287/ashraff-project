@@ -44,4 +44,5 @@ class LocalDb {
 class LocalDbStrings {
   static String USERNAME = "USERNAME";
   static String ISLOGIN = "ISLOGIN";
+  static String FCMTOKEN = "FCMTOKEN";
 }

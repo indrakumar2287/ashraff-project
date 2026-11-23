@@ -29,47 +29,60 @@ class _ChatUsersListScreenStateState extends State<ChatUsersListScreenState> {
                     Expanded(
                       child: StreamBuilder(
                         stream: controller.loadChats(),
-                        builder: (context, snapshot) {
-                          if (!snapshot.hasData) {
-                            return CircularProgressIndicator();
+                        builder: (context, snapshotStream) {
+                          if (!snapshotStream.hasData) {
+                            return Center(child: CircularProgressIndicator());
                           }
                           print(
-                            "Users List >> ${snapshot.data?.docs?.firstOrNull?.data() ?? ''}",
+                            "Users List >> ${snapshotStream.data?.docs?.firstOrNull?.data() ?? ''}",
                           );
-                          final users = snapshot.data?.docs ?? [];
+                          final users = snapshotStream.data?.docs ?? [];
                           return ListView.builder(
                             itemCount: users.length,
                             itemBuilder: (context, index) {
                               final user = users[index].data();
-                              print("User >> ${user['memberNames']}");
-                              final List memberNames = user['memberNames'];
+                              // print("User >> ${user}");
+                              final List memberNames =
+                                  user['memberNames'] ?? [];
+                              final List memberIds = user['membersIds'] ?? [];
                               //  final String otherUserName =  await controller.getOtherUserName(memberNames) ;
 
                               return FutureBuilder(
-                                future: controller.getOtherUserName(
-                                  memberNames,
-                                ),
-                                builder: (context, snapshot) {
-                                  if (!snapshot.hasData) {
-                                    return CircularProgressIndicator();
-                                  }
-                                  return ListTile(
-                                    onTap: () {
-                                      controller.selectedUsername.value =
-                                          snapshot.data?.toString() ?? '';
-
-                                      // TODO
-                                      //  controller.selectedUserId.value = userId;
-                                      //  controller.selectedChatId.value = data.id ;
-
-                                      Get.toNamed(RouteNames.chatModuleScreen);
-                                    },
-                                    tileColor: Colors.grey.withAlpha(100),
-                                    title: Text(
-                                      snapshot.data?.toString() ?? '',
+                                future: controller.getOtherUserId(memberIds),
+                                builder: (context, snapshot1) {
+                                  return FutureBuilder(
+                                    future: controller.getOtherUserName(
+                                      memberNames,
                                     ),
-                                  ).paddingAll(5);
-                                },
+                                    builder: (context, snapshot) {
+                                      if (!snapshot.hasData) {
+                                        return CircularProgressIndicator();
+                                      }
+                                      return ListTile(
+                                        onTap: () {
+                                          controller.selectedUsername.value =
+                                              snapshot.data?.toString() ?? '';
+                                          controller.selectedUserId.value =
+                                              snapshot1.data?.toString() ?? '';
+
+                                          // TODO
+                                          controller.selectedChatId.value =
+                                              users[index].id ?? ''; 
+
+                                     
+
+                                          Get.toNamed(
+                                            RouteNames.chatModuleScreen,
+                                          );
+                                        },
+                                        tileColor: Colors.grey.withAlpha(100),
+                                        title: Text(
+                                          snapshot.data?.toString() ?? '',
+                                        ),
+                                      ).paddingAll(5);
+                                    },
+                                  );
+                                }
                               );
                             },
                           );

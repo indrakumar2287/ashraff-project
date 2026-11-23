@@ -1,7 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get/get_utils/src/extensions/export.dart';
+import 'package:shopping_app/screens/auth/controller/auth_controller.dart';
 import 'package:shopping_app/screens/chat_module/controller/chat_module_controller.dart';
+import 'package:shopping_app/screens/chat_module/view/message_bubble.dart';
 
 class ChatModuleScreen extends StatefulWidget {
   const ChatModuleScreen({super.key});
@@ -38,7 +41,17 @@ class _ChatModuleScreenState extends State<ChatModuleScreen> {
                             itemCount: messages.length,
                             itemBuilder: (context, index) {
                               final msg = messages[index].data();
-                              print("Msg >> ${msg['message']}");
+                              // print("Msg >> ${msg['message']}");
+
+                              String myId =
+                                  FirebaseAuth.instance.currentUser?.uid ?? '';
+
+                              print("My ID > $userId ");
+                              print(
+                                "Sender ID > ${msg['senderId'].toString()} ",
+                              );
+
+                              return MessageBubble(msg: msg);
                               return ListTile(
                                     tileColor: Colors.grey.withAlpha(100),
                                     title: Text(
@@ -65,6 +78,14 @@ class _ChatModuleScreenState extends State<ChatModuleScreen> {
                           decoration: InputDecoration(border: OutlineInputBorder()),
                         ),
                       ),
+
+                    SizedBox(width: 20),
+                    GestureDetector(
+                      onTap: () {
+                        controller.sendMediaMsg('image', testImage);
+                      },
+                      child: Icon(Icons.image),
+                    ), 
                       SizedBox(width: 20,),
                       GestureDetector(
                         onTap: (){
@@ -82,3 +103,11 @@ class _ChatModuleScreenState extends State<ChatModuleScreen> {
       );
   }
 }
+
+
+
+
+
+
+final String testImage =
+    'https://www.hocalwire.com/h-upload/uid/UrqcwKUWdSIBFwKspwg7hiPlTyX5TAoB7033284.jpg';

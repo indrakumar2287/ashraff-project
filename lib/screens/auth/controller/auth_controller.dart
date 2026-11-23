@@ -1,4 +1,5 @@
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/state_manager.dart';
@@ -21,10 +22,12 @@ class AuthController extends GetxController {
   void signUpUser() async {
     try {
       isLoadingSignUp.value = true;
+      final token = await LocalDb.getValue(LocalDbStrings.FCMTOKEN); 
       bool isSuccess = await FirebaseService().signUpUser(
         email: emailController.text,
         password: passowrdController.text,
         name: nameController.text,
+        token: token ?? ''
       );
 
       if (isSuccess) {
@@ -33,7 +36,10 @@ class AuthController extends GetxController {
 
         showSnackBar(text: "Sign up successfully", isSuccess: true);
         LocalDb.setBool(LocalDbStrings.ISLOGIN, true);
+
+        userId = FirebaseAuth.instance.currentUser?.uid ?? ''; 
         await setUserNameInLocalDB(nameController.text); 
+      
       } else {
         // showSnackBar(text: "Firebase Error", isSuccess: false);
       }
@@ -62,10 +68,13 @@ class AuthController extends GetxController {
 
 
         LocalDb.setBool(LocalDbStrings.ISLOGIN, true);
+        userId = FirebaseAuth.instance.currentUser?.uid ?? ''; 
 
         final userData = await FirebaseService().getCurrentUserDetails();
         print("userData >> ${userData}");
-        await setUserNameInLocalDB(userData?['name'].toString() ?? '');   
+        await setUserNameInLocalDB(userData?['name'].toString() ?? '');  
+
+       
       }
     } on Exception catch (e) {
       // TODO
@@ -87,3 +96,4 @@ Future<String> getUserName() async {
 
 
 String userName = '';
+String userId = '';
