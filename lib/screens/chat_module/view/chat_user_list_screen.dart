@@ -13,6 +13,8 @@ class ChatUsersListScreenState extends StatefulWidget {
 }
 
 class _ChatUsersListScreenStateState extends State<ChatUsersListScreenState> {
+
+
   @override
   Widget build(BuildContext context) {
     Get.put(ChatModuleController());
@@ -45,6 +47,8 @@ class _ChatUsersListScreenStateState extends State<ChatUsersListScreenState> {
                               final List memberNames =
                                   user['memberNames'] ?? [];
                               final List memberIds = user['membersIds'] ?? [];
+                              final String lastMessage =
+                                  user['lastMessage'] ?? '';
                               //  final String otherUserName =  await controller.getOtherUserName(memberNames) ;
 
                               return FutureBuilder(
@@ -68,9 +72,7 @@ class _ChatUsersListScreenStateState extends State<ChatUsersListScreenState> {
                                           // TODO
                                           controller.selectedChatId.value =
                                               users[index].id ?? ''; 
-
-                                     
-
+                                  
                                           Get.toNamed(
                                             RouteNames.chatModuleScreen,
                                           );
@@ -78,6 +80,10 @@ class _ChatUsersListScreenStateState extends State<ChatUsersListScreenState> {
                                         tileColor: Colors.grey.withAlpha(100),
                                         title: Text(
                                           snapshot.data?.toString() ?? '',
+                                        ),
+                                        subtitle: Text(
+                                          lastMessage,
+                                          style: TextStyle(fontSize: 12),
                                         ),
                                       ).paddingAll(5);
                                     },

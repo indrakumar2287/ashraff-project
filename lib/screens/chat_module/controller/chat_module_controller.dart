@@ -7,6 +7,9 @@ import 'package:shopping_app/screens/auth/controller/auth_controller.dart';
 import 'package:shopping_app/utils/custom_toast.dart';
 
 class ChatModuleController extends GetxController {
+
+  
+
   Stream<QuerySnapshot<Map<String, dynamic>>> loadUsers() {
     final myUserId = FirebaseAuth.instance.currentUser?.uid;
 
@@ -89,7 +92,7 @@ class ChatModuleController extends GetxController {
   RxString selectedChatId = ''.obs;
 
   TextEditingController msgController = TextEditingController();
-  void sendMessage() async {
+  Future<void> sendMessage() async {
     if (msgController.text.isEmpty) {
       return;
     }
@@ -105,7 +108,21 @@ class ChatModuleController extends GetxController {
             "type": "text",
           });
 
+
+      try {
+        await FirebaseFirestore.instance
+            .collection("User Chats")
+            .doc(selectedChatId.value)
+            .set({
+              'lastMessage': msgController.text.toString(),
+            }, SetOptions(merge: true));
+      } on Exception catch (e) {
+        print("Error Lastmsg >> $e");
+      }
+
       msgController.clear();
+
+          
     } on Exception catch (e) {
       print("Error >> $e");
     }

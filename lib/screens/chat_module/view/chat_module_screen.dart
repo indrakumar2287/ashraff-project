@@ -1,7 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_instance/get_instance.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:get/get_utils/src/extensions/export.dart';
+import 'package:get/utils.dart';
 import 'package:shopping_app/screens/auth/controller/auth_controller.dart';
 import 'package:shopping_app/screens/chat_module/controller/chat_module_controller.dart';
 import 'package:shopping_app/screens/chat_module/view/message_bubble.dart';
@@ -14,6 +17,25 @@ class ChatModuleScreen extends StatefulWidget {
 }
 
 class _ChatModuleScreenState extends State<ChatModuleScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+    final docId = Get.put(ChatModuleController()).selectedChatId.value;
+    FirebaseFirestore.instance
+        .collection("User Chats")
+        // .doc(docId)
+        // .collection("Messages")
+        // .orderBy('createdAt', descending: false)
+        .snapshots()
+        .listen((data) {
+          print(
+            "New chat received >> init > ${data.docs?.firstOrNull?.data()}",
+          );
+        });
+  }
+
+  ScrollController scrollController = ScrollController(); 
   @override
   Widget build(BuildContext context) {
     return GetBuilder<ChatModuleController>(
@@ -38,6 +60,8 @@ class _ChatModuleScreenState extends State<ChatModuleScreen> {
                           );
                           final messages = snapshot.data?.docs ?? [];
                           return ListView.builder(
+                            // physics: NeverScrollableScrollPhysics(),
+                            controller: scrollController,
                             itemCount: messages.length,
                             itemBuilder: (context, index) {
                               final msg = messages[index].data();
@@ -52,12 +76,12 @@ class _ChatModuleScreenState extends State<ChatModuleScreen> {
                               );
 
                               return MessageBubble(msg: msg);
-                              return ListTile(
-                                    tileColor: Colors.grey.withAlpha(100),
-                                    title: Text(
-                                      msg['message'].toString() ?? '',
-                                    ),
-                                  ).paddingAll(5);
+                              // return ListTile(
+                              //       tileColor: Colors.grey.withAlpha(100),
+                              //       title: Text(
+                              //         msg['message'].toString() ?? '',
+                              //       ),
+                              //     ).paddingAll(5);
                                 
                             },
                           );
@@ -88,8 +112,17 @@ class _ChatModuleScreenState extends State<ChatModuleScreen> {
                     ), 
                       SizedBox(width: 20,),
                       GestureDetector(
-                        onTap: (){
-                          controller.sendMessage();
+                      onTap: () async {
+                        await controller.sendMessage();
+                        // scrollController.position.
+                        print(" Position >> ${scrollController.position}");
+                        if (scrollController.hasClients) {
+                          scrollController.animateTo(
+                            scrollController.position.maxScrollExtent,
+                            duration: Duration(microseconds: 800),
+                            curve: Curves.easeOut,
+                          );
+                        }
 
                         },
                         child: Icon(Icons.send))
