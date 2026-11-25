@@ -17,13 +17,19 @@ class HomeScreen extends StatefulWidget {
       route: RouteNames.userListChat,
     ),
 
-
     _HomeModule(
       title: 'RealTime DB',
       description: 'RealTime DB ',
       icon: Icons.chat_bubble_outline,
       color: Colors.indigo,
       route: RouteNames.realtimeDb,
+    ),
+    _HomeModule(
+      title: 'Map',
+      description: 'View your location on a map',
+      icon: Icons.map_outlined,
+      color: Colors.blue,
+      route: RouteNames.mapScreen,
     ),
     _HomeModule(
       title: 'Chats',
@@ -167,8 +173,7 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: const Text('Learning Hub'),
         actions: [
-
-          Text(userName), 
+          Text(userName),
 
           if (user == null)
             IconButton(
@@ -208,9 +213,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      user == null
-                          ? 'Welcome!'
-                          : 'Welcome, $userName!',
+                      user == null ? 'Welcome!' : 'Welcome, $userName!',
                       style: Theme.of(context).textTheme.headlineSmall
                           ?.copyWith(
                             color: Colors.white,

@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shopping_app/screens/chat/controller/chat_module_controller.dart';
+import 'package:shopping_app/screens/chat/controller/chat_controller.dart';
 
 class NewChatScreen extends StatefulWidget {
   const NewChatScreen({super.key});

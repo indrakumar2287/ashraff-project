@@ -21,6 +21,7 @@ class RouteNames {
   static String chatRoom = '/chat-room';
   static String firebaseLesson = '/firebase-lesson';
   static String realtimeDb = '/realtime-db';
+  static String mapScreen = '/map';
   static String userListChat = '/user-list-chat';
   static String newChatModule = '/new-chat-module';
   static String chatModuleScreen = '/chat-module-screen';

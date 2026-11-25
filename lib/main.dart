@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shopping_app/firebase_options.dart';
+import 'package:shopping_app/map_screen.dart';
 import 'package:shopping_app/route_names.dart';
 import 'package:shopping_app/screens/add_student.dart';
 import 'package:shopping_app/screens/auth/view/signup_screen.dart';
@@ -92,6 +93,7 @@ class MyApp extends StatelessWidget {
         ),
 
         GetPage(name: RouteNames.realtimeDb, page: () => const RealtimeDb()),
+        GetPage(name: RouteNames.mapScreen, page: () => const MapScreen()),
         // New Chat Module
         GetPage(
           name: RouteNames.newChatModule,

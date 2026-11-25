@@ -1,7 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shopping_app/screens/chat/controller/chat_module_controller.dart';
+import 'package:shopping_app/screens/chat/controller/chat_controller.dart';
 import 'package:shopping_app/screens/chat/view/message_bubble.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -30,20 +29,27 @@ class _ChatScreenState extends State<ChatScreen> {
             children: [
               Expanded(
                 child: controller.selectedUserId.value.isNotEmpty
-                    ? StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                        stream: controller.getChat(
-                          controller.selectedChatId.value,
-                        ),
+                    ? StreamBuilder<List<Map<String, dynamic>>>(
+                        stream: controller.localMessagesStream,
                         builder: (context, snapshot) {
-                          if (!snapshot.hasData) {
-                            return const CircularProgressIndicator();
+                          if (snapshot.hasError) {
+                            return Center(
+                              child: Text(
+                                'Could not load messages: ${snapshot.error}',
+                              ),
+                            );
                           }
-                          final messages = snapshot.data!.docs;
+                          if (!snapshot.hasData) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                          final messages = snapshot.data!;
                           return ListView.builder(
                             controller: scrollController,
                             itemCount: messages.length,
                             itemBuilder: (context, index) {
-                              return MessageBubble(msg: messages[index].data());
+                              return MessageBubble(msg: messages[index]);
                             },
                           );
                         },
