@@ -1,194 +1,148 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:shopping_app/route_names.dart';
+import 'package:shopping_app/screens/auth/controller/auth_controller.dart';
+import 'package:shopping_app/utils/custom_toast.dart';
 
 class ChatController extends GetxController {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  Stream<QuerySnapshot<Map<String, dynamic>>> loadUsers() {
+    final myUserId = FirebaseAuth.instance.currentUser?.uid;
 
-  User? get currentUser => _auth.currentUser;
-
-  Stream<QuerySnapshot<Map<String, dynamic>>> chatsForCurrentUser() {
-    final user = currentUser;
-    if (user == null) {
-      return Stream.error(StateError('Sign in to see your chats.'));
-    }
-
-    return _firestore
-        .collection('chats')
-        .where('members', arrayContains: user.uid)
+    return FirebaseFirestore.instance
+        .collection("Users")
+        .where(FieldPath.documentId, isNotEqualTo: myUserId)
         .snapshots();
+
+    // print("Data>> ${data.docs?.firstOrNull?.metadata}") ;
   }
 
-  Future<List<ChatUser>> loadUsers() async {
-    final user = currentUser;
-    if (user == null) {
-      throw StateError('Sign in to find people to chat with.');
-    }
-
-    final snapshot = await _firestore.collection('Users').get();
-    final users = snapshot.docs
-        .map(ChatUser.fromDocument)
-        .where((otherUser) => otherUser.id != user.uid)
-        .toList();
-    users.sort((first, second) => first.name.compareTo(second.name));
-    return users;
-  }
-
-  Stream<QuerySnapshot<Map<String, dynamic>>> messagesForChat(String chatId) {
-    return _firestore
-        .collection('chats')
-        .doc(chatId)
-        .collection('messages')
-        .orderBy('createdAt', descending: true)
+  Stream<QuerySnapshot<Map<String, dynamic>>> loadChats() {
+    return FirebaseFirestore.instance
+        .collection("User Chats")
+        .where(
+          'membersIds',
+          arrayContains: FirebaseAuth.instance.currentUser?.uid ?? '',
+        )
         .snapshots();
+
+    // print("Data>> ${data.docs?.firstOrNull?.metadata}") ;
   }
 
-  Future<String> openChat(ChatUser otherUser) async {
-    final user = currentUser;
-    if (user == null) {
-      throw StateError('Sign in before starting a chat.');
+  RxBool isLoading = false.obs;
+  void createANdOpenNewChat(String name, String userId) async {
+    isLoading.value = true;
+    try {
+      final currentUser = FirebaseAuth.instance.currentUser;
+      final data = await FirebaseFirestore.instance
+          .collection("User Chats")
+          .add({
+            'createdAt': FieldValue.serverTimestamp(),
+            'updateddAt': FieldValue.serverTimestamp(),
+            "memberNames": [userName, name],
+            "membersIds": [currentUser?.uid ?? '', userId],
+            "lastMessage": '',
+            "lastMessageTime": FieldValue.serverTimestamp(),
+          });
+      selectedUsername.value = name;
+
+      selectedUserId.value = userId;
+      selectedChatId.value = data.id;
+
+      Get.toNamed(RouteNames.chatModuleScreen);
+
+      showSnackBar(text: "New Chat created!", isSuccess: true);
+    } on Exception catch (e) {
+      debugPrint("Error >> $e");
+    } finally {
+      isLoading.value = false;
     }
+  }
 
-    final chats = await _firestore
-        .collection('chats')
-        .where('members', arrayContains: user.uid)
-        .get();
+  Future<String> getOtherUserName(List userNames) async {
+    List list = userNames.where((item) => item != userName).toList();
+    return list.firstOrNull;
+  }
 
-    for (final chat in chats.docs) {
-      final members = List<String>.from(chat.data()['members'] ?? []);
-      if (members.length == 2 && members.contains(otherUser.id)) {
-        return chat.id;
+  Future<String> getOtherUserId(List userIds) async {
+    final myId = FirebaseAuth.instance.currentUser?.uid ?? '';
+    List list = userIds.where((item) => item != myId).toList();
+
+    return list.firstOrNull;
+  }
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> getChat(String docId) {
+    return FirebaseFirestore.instance
+        .collection("User Chats")
+        .doc(docId)
+        .collection("Messages")
+        .orderBy('createdAt', descending: false)
+        .snapshots();
+
+    // print("Data>> ${data.docs?.firstOrNull?.metadata}") ;
+  }
+
+  RxString selectedUsername = ''.obs;
+  RxString selectedUserId = ''.obs;
+  RxString selectedChatId = ''.obs;
+
+  TextEditingController msgController = TextEditingController();
+  Future<void> sendMessage() async {
+    if (msgController.text.isEmpty) {
+      return;
+    }
+    try {
+      final currentUser = FirebaseAuth.instance.currentUser;
+      await FirebaseFirestore.instance
+          .collection("User Chats")
+          .doc(selectedChatId.value)
+          .collection("Messages")
+          .add({
+            'createdAt': FieldValue.serverTimestamp(),
+            'updateddAt': FieldValue.serverTimestamp(),
+            "senderId": currentUser?.uid,
+            "senderName": userName,
+            "message": msgController.text.toString(),
+            "attachments": '',
+            "type": "text",
+          });
+
+      try {
+        await FirebaseFirestore.instance
+            .collection("User Chats")
+            .doc(selectedChatId.value)
+            .set({
+              'lastMessage': msgController.text.toString(),
+            }, SetOptions(merge: true));
+      } on Exception catch (e) {
+        debugPrint("Error Lastmsg >> $e");
       }
+
+      msgController.clear();
+    } on Exception catch (e) {
+      debugPrint("Error >> $e");
     }
-
-    final chat = _firestore.collection('chats').doc();
-    await chat.set({
-      'members': [user.uid, otherUser.id],
-      'memberNames': {
-        user.uid: user.email ?? 'User',
-        otherUser.id: otherUser.name,
-      },
-      'lastMessage': '',
-      'createdAt': FieldValue.serverTimestamp(),
-      'updatedAt': FieldValue.serverTimestamp(),
-    });
-    return chat.id;
   }
 
-  Future<void> sendMessage({
-    required String chatId,
-    required String text,
-  }) async {
-    final user = currentUser;
-    if (user == null) {
-      throw StateError('Sign in before sending a message.');
+  void sendMediaMsg(String type, String media) async {
+    try {
+      final currentUser = FirebaseAuth.instance.currentUser;
+      await FirebaseFirestore.instance
+          .collection("User Chats")
+          .doc(selectedChatId.value)
+          .collection("Messages")
+          .add({
+            'createdAt': FieldValue.serverTimestamp(),
+            'updateddAt': FieldValue.serverTimestamp(),
+            "senderId": currentUser?.uid,
+            "senderName": userName,
+            "attachments": '',
+            "image": media,
+            "type": "image",
+          });
+    } on Exception catch (e) {
+      debugPrint("Error >> $e");
     }
-
-    final messageText = text.trim();
-    if (messageText.isEmpty) return;
-
-    final chat = _firestore.collection('chats').doc(chatId);
-    final batch = _firestore.batch();
-    final message = chat.collection('messages').doc();
-
-    batch.set(message, {
-      'senderId': user.uid,
-      'senderName': user.email ?? 'User',
-      'text': messageText,
-      'createdAt': FieldValue.serverTimestamp(),
-    });
-    batch.update(chat, {
-      'lastMessage': messageText,
-      'updatedAt': FieldValue.serverTimestamp(),
-    });
-    await batch.commit();
-  }
-}
-
-class ChatUser {
-  const ChatUser({required this.id, required this.name, required this.email});
-
-  final String id;
-  final String name;
-  final String email;
-
-  factory ChatUser.fromDocument(
-    QueryDocumentSnapshot<Map<String, dynamic>> document,
-  ) {
-    final data = document.data();
-    final email = data['email']?.toString() ?? '';
-    final savedName = data['name']?.toString().trim() ?? '';
-    return ChatUser(
-      id: data['uid']?.toString() ?? document.id,
-      name: savedName.isEmpty ? email : savedName,
-      email: email,
-    );
-  }
-}
-
-class ChatRoomArguments {
-  const ChatRoomArguments({required this.chatId, required this.otherUserName});
-
-  final String chatId;
-  final String otherUserName;
-}
-
-class ChatConversation {
-  const ChatConversation({
-    required this.id,
-    required this.otherUserName,
-    required this.lastMessage,
-    required this.updatedAt,
-  });
-
-  final String id;
-  final String otherUserName;
-  final String lastMessage;
-  final DateTime? updatedAt;
-
-  factory ChatConversation.fromDocument(
-    QueryDocumentSnapshot<Map<String, dynamic>> document,
-    String currentUserId,
-  ) {
-    final data = document.data();
-    final members = List<String>.from(data['members'] ?? []);
-    final otherUserId = members.firstWhere(
-      (memberId) => memberId != currentUserId,
-      orElse: () => '',
-    );
-    final names = Map<String, dynamic>.from(data['memberNames'] ?? {});
-    final timestamp = data['updatedAt'];
-
-    return ChatConversation(
-      id: document.id,
-      otherUserName: names[otherUserId]?.toString() ?? 'Chat',
-      lastMessage: data['lastMessage']?.toString() ?? '',
-      updatedAt: timestamp is Timestamp ? timestamp.toDate() : null,
-    );
-  }
-}
-
-class ChatMessage {
-  const ChatMessage({
-    required this.senderId,
-    required this.text,
-    required this.createdAt,
-  });
-
-  final String senderId;
-  final String text;
-  final DateTime? createdAt;
-
-  factory ChatMessage.fromDocument(
-    QueryDocumentSnapshot<Map<String, dynamic>> document,
-  ) {
-    final data = document.data();
-    final timestamp = data['createdAt'];
-    return ChatMessage(
-      senderId: data['senderId']?.toString() ?? '',
-      text: data['text']?.toString() ?? '',
-      createdAt: timestamp is Timestamp ? timestamp.toDate() : null,
-    );
   }
 }

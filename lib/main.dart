@@ -8,14 +8,10 @@ import 'package:shopping_app/screens/add_student.dart';
 import 'package:shopping_app/screens/auth/view/signup_screen.dart';
 import 'package:shopping_app/screens/book/view/book_details.dart';
 import 'package:shopping_app/screens/book/view/book_list_screen.dart';
-import 'package:shopping_app/screens/chat/controller/chat_controller.dart';
-import 'package:shopping_app/screens/chat/view/chat_list_screen.dart';
-import 'package:shopping_app/screens/chat/view/chat_room_screen.dart';
-import 'package:shopping_app/screens/chat/view/new_chat_screen.dart';
 import 'package:shopping_app/screens/builders_widget.dart';
-import 'package:shopping_app/screens/chat_module/view/chat_module_screen.dart';
-import 'package:shopping_app/screens/chat_module/view/chat_user_list_screen.dart';
-import 'package:shopping_app/screens/chat_module/view/new_chat_module_screen.dart';
+import 'package:shopping_app/screens/chat/view/chat_screen.dart';
+import 'package:shopping_app/screens/chat/view/chat_list_screen.dart';
+import 'package:shopping_app/screens/chat/view/new_chat_screen.dart';
 import 'package:shopping_app/screens/getx_widgets.dart';
 import 'package:shopping_app/screens/home_screen.dart';
 import 'package:shopping_app/screens/auth/view/login_screen.dart';
@@ -34,19 +30,15 @@ import 'package:sqflite/sqflite.dart';
 import 'screens/multi_selection_screen.dart';
 import 'screens/search_screen.dart';
 
-
-
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // Get a location using getDatabasesPath
   // await DatabaseHelper().getDataBase() ;
 
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  prefs = await SharedPreferences.getInstance(); 
+  prefs = await SharedPreferences.getInstance();
 
-
-  await NotificationService.init(); 
+  await NotificationService.init();
 
   runApp(const MyApp());
 }
@@ -88,13 +80,12 @@ class MyApp extends StatelessWidget {
         GetPage(name: RouteNames.signup, page: () => SignupScreen()),
         GetPage(name: RouteNames.builders, page: () => BuildersWidget()),
         GetPage(name: RouteNames.imageWidgets, page: () => ImageWidgets()),
-        GetPage(name: RouteNames.chatList, page: () => const ChatListScreen()),
-        GetPage(name: RouteNames.newChat, page: () => const NewChatScreen()),
         GetPage(
-          name: RouteNames.chatRoom,
-          page: () =>
-              ChatRoomScreen(arguments: Get.arguments as ChatRoomArguments),
+          name: RouteNames.chatList,
+          page: () => const ChatUsersListScreen(),
         ),
+        GetPage(name: RouteNames.newChat, page: () => const NewChatScreen()),
+        GetPage(name: RouteNames.chatRoom, page: () => const ChatScreen()),
         GetPage(
           name: RouteNames.firebaseLesson,
           page: () => const FirebaseRealtimeLessonScreen(),
@@ -104,15 +95,15 @@ class MyApp extends StatelessWidget {
         // New Chat Module
         GetPage(
           name: RouteNames.newChatModule,
-          page: () => const NewChatModuleScreen(),
+          page: () => const NewChatScreen(),
         ),
         GetPage(
           name: RouteNames.userListChat,
-          page: () => const ChatUsersListScreenState(),
+          page: () => const ChatUsersListScreen(),
         ),
         GetPage(
           name: RouteNames.chatModuleScreen,
-          page: () => const ChatModuleScreen(),
+          page: () => const ChatScreen(),
         ),
       ],
       theme: ThemeData(
