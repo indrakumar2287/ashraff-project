@@ -22,6 +22,9 @@ class _MapScreenState extends State<MapScreen> {
     getUserLocation();
   }
 
+  GoogleMapController? mapController; 
+ 
+
   void getUserLocation() async {
     Location location = Location();
 
@@ -54,17 +57,25 @@ class _MapScreenState extends State<MapScreen> {
 
     Future.delayed(Duration(seconds: 4));
 
+    if (mapController != null) {
+      mapController?.moveCamera(
+        CameraUpdate.newLatLng(
+          LatLng(locationData.latitude ?? 25, locationData.longitude ?? 75),
+        ),
+      );
+    }
+
     setState(() {
       currentLatLng = LatLng(
         locationData.latitude ?? 25,
         locationData.longitude ?? 75,
       );
-      initialCameraPosition = CameraPosition(
-        target: LatLng(
-          locationData.latitude ?? 25,
-          locationData.longitude ?? 75,
-        ),
-      );
+      // initialCameraPosition = CameraPosition(
+      //   target: LatLng(
+      //     locationData.latitude ?? 25,
+      //     locationData.longitude ?? 75,
+      //   ),
+      // );
     });
   }
 
@@ -79,6 +90,9 @@ class _MapScreenState extends State<MapScreen> {
             Expanded(
               child: GoogleMap(
                 initialCameraPosition: initialCameraPosition,
+                onMapCreated: (controller) {
+                  mapController = controller;
+                },
 
 
                 zoomControlsEnabled: true,

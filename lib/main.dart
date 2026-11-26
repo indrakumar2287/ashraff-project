@@ -17,6 +17,7 @@ import 'package:shopping_app/screens/getx_widgets.dart';
 import 'package:shopping_app/screens/home_screen.dart';
 import 'package:shopping_app/screens/auth/view/login_screen.dart';
 import 'package:shopping_app/screens/images/view/image_widgets.dart';
+import 'package:shopping_app/screens/qr_screen.dart';
 import 'package:shopping_app/screens/realtime_db/view/RealTimeDb.dart';
 import 'package:shopping_app/screens/splash_screen.dart';
 import 'package:shopping_app/screens/student/view/employee_list_screen.dart';
@@ -55,6 +56,7 @@ class MyApp extends StatelessWidget {
       initialRoute: RouteNames.splash,
       getPages: [
         GetPage(name: RouteNames.splash, page: () => const SplashScreen()),
+        GetPage(name: RouteNames.qrScreen, page: () => const QrScreen()),
         GetPage(name: RouteNames.home, page: () => const HomeScreen()),
         GetPage(
           name: RouteNames.employeeScreen,

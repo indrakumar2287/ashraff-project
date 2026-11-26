@@ -18,6 +18,14 @@ class HomeScreen extends StatefulWidget {
     ),
 
     _HomeModule(
+      title: 'QR',
+      description: 'QR ',
+      icon: Icons.qr_code,
+      color: Colors.orange,
+      route: RouteNames.qrScreen,
+    ),
+
+    _HomeModule(
       title: 'RealTime DB',
       description: 'RealTime DB ',
       icon: Icons.chat_bubble_outline,
@@ -242,7 +250,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       crossAxisCount: columns,
                       crossAxisSpacing: 14,
                       mainAxisSpacing: 14,
-                      childAspectRatio: 0.95,
+                      childAspectRatio: 0.85,
                     ),
                     itemBuilder: (context, index) {
                       final module = HomeScreen._modules[index];
@@ -314,26 +322,30 @@ class _ModuleCard extends StatelessWidget {
                   ),
                   child: Icon(module.icon, color: Colors.white, size: 28),
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      module.title,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        module.title,
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      module.description,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Colors.white.withValues(alpha: 0.9),
+                      const SizedBox(height: 4),
+                      Expanded(
+                        child: Text(
+                          module.description,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                            color: Colors.white.withValues(alpha: 0.9),
+                          ),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ],
             ),
